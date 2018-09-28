@@ -1,5 +1,6 @@
 import json
 import os
+import time
 import traceback
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -27,6 +28,7 @@ def get_fzdm_img(browser, url, chapter_name, comic_name, error_url_list=[]):
     n = 0
     while True:
         browser.get(chapter_url)
+        time.sleep(3)
         # 获取图片
         is_success, img = try_get_element(browser, img_xpaht)
         # 如果 is_success 为False 表示查找失败
@@ -38,7 +40,7 @@ def get_fzdm_img(browser, url, chapter_name, comic_name, error_url_list=[]):
             if is_success:
                 print("url %s 该话下载结束: 共 %s 页" % (url, n+1))
                 return is_download_success
-            elif '  沒有啦  ' in not_anymore.text :
+            elif '  沒有啦  ' in not_anymore.text:
                 print("url %s (没有啦)该话下载结束: 共 %s 页" % (url, n+1))
                 return is_download_success
             else:
@@ -130,10 +132,11 @@ def main(url, comic_name, config):
                     browser=browser,
                     link=url,
                     comic_name=comic_name,
-                    start=60, step=-1
+                    end=-20, step=-1
                     )
             chapter_link_list = redis_cli.lrange(
                     '%s_chapters_link' % comic_name, 0, -1)
+    print("test: ", redis_cli.lrange('%s_chapters_link' % comic_name, 0, -1))
     while True:
         # 获取 章节的名字
         link = redis_cli.lpop('%s_chapters_link' % comic_name)
@@ -159,7 +162,7 @@ def main(url, comic_name, config):
 
 
 if __name__ == '__main__':
-    url = 'https://manhua.fzdm.com/131/'
-    comic_name = 'hero'
+    url = 'https://manhua.fzdm.com/10/'
+    comic_name = 'hunter'
     # comic_name = input('保存的目录名字: ')
     main(url, comic_name, None)
