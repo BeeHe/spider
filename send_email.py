@@ -13,8 +13,8 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 ADMINS = ['hebee0954@gmail.com', "609926981@qq.com"]
 
 
-def send_mail(filename):
-    """ send mail """
+def send_email(filename):
+    """ send email """
     if os.path.exists(filename):
         with open(filename, 'r') as f:
             content = f.read()
@@ -25,7 +25,7 @@ def send_mail(filename):
         message['Subject'] = filename
 
         try:
-            print(MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD)
+            print(MAIL_PORT, MAIL_USERNAME)
             smtp_obj = smtplib.SMTP()
             smtp_obj.connect(MAIL_SERVER, MAIL_PORT)
             smtp_obj.login(MAIL_USERNAME, MAIL_PASSWORD)
